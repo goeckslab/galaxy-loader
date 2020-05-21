@@ -1,0 +1,3 @@
+id	filename	md5	size	state
+053f01ed-3154-4aea-9e7f-932c435034b3	TCGA.BRCA.mutect.053f01ed-3154-4aea-9e7f-932c435034b3.DR-10.0.protected.maf.gz	ae12bbce7abcc03eff228935fa8d3d22	1882061658	validated
+0d33555a-352a-4f8e-b63e-93a226c4d360	TCGA-A8-A08S-01A-11R-A035-13_mirna_gdc_realn.bam	e4a79ab4d4cf0eaa05438bb639bd6659	36781467	validated
