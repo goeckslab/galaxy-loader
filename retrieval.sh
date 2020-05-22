@@ -12,10 +12,14 @@ fi
 filecheck "$1"
 filecheck "$2"
 
+if [ -z "$3" ] ; then
+  printf "$3 is empty, should be API key\n"
+fi
+
 MANIFEST=$1
 CREDS=$2
 
-APIKEY="3217c67d843a7aa0ce3e72497a5ffb00"
+APIKEY="$3"
 ENDPOINT="127.0.0.1"
 PORT="8080"
 

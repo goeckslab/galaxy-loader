@@ -4,9 +4,8 @@ from bioblend.galaxy import GalaxyInstance
 from bioblend.galaxy.libraries import LibraryClient
 from bioblend.galaxy.histories import HistoryClient
 from bioblend.galaxy.folders import FoldersClient
-
 from datetime import datetime
-
+from time import sleep
 
 parser = argparse.ArgumentParser()
 
@@ -21,7 +20,7 @@ host = "127.0.0.1" if not args.endpoint else args.endpoint
 port = "8080"
 addr = host + ":{}".format(port) if port else ""
 
-apik = "3217c67d843a7aa0ce3e72497a5ffb00"
+apik = args.apikey
 
 gi = GalaxyInstance(addr, apik)
 lc = LibraryClient(gi)
@@ -81,8 +80,6 @@ hdata = []
 for f in files:
     hdata.append(hc.upload_dataset_from_library(history["id"], f["id"]))
     #hdata.append(hc.copy_dataset(history["id"], f["id"], source='ldda'))
-
-print(hdata)
 
 # create dataset collection
 collection_description = {
