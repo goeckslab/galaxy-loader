@@ -67,8 +67,28 @@ def add_files_in_path_to_lib(lib_id, folder_id, path):
             tag_using_filenames=True
             )
 
-print(add_files_in_path_to_lib(lib["id"], folder["id"], args.sourcedir))
-# add files to history 
+files = add_files_in_path_to_lib(lib["id"], folder["id"], args.sourcedir)
+if isinstance(files, dict):
+    files = [files]
+print(files)
 
-#history = hc.create_history()
-#print(history)
+# add files to history 
+history = hc.create_history("{}".format(str))
+print(history)
+
+# create dataset collection
+collection_description = {
+    'collection_type': 'list',
+    'element_identifiers': [],
+    'name': 'manifest collection'
+}
+for f in files:
+    element_identifier = {
+        'id': f["id"],
+        'name': f["name"],
+        'src': 'ldda'}
+    collection_description["element_identifiers"].append(element_identifier)
+
+print(collection_description)
+
+hc.create_dataset_collection(history["id"], collection_description)
