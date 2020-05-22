@@ -17,7 +17,7 @@ parser.add_argument("-s", "--sourcedir")
 
 args = parser.parse_args()
 
-host = "localhost" if not args.endpoint else args.endpoint
+host = "127.0.0.1" if not args.endpoint else args.endpoint
 port = "8080"
 addr = host + ":{}".format(port) if port else ""
 

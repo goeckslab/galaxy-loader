@@ -16,7 +16,7 @@ MANIFEST=$1
 CREDS=$2
 
 APIKEY="3217c67d843a7aa0ce3e72497a5ffb00"
-ENDPOINT="locahost"
+ENDPOINT="127.0.0.1"
 PORT="8080"
 
 BASEPATH="/tmp/galaxyfiles"
@@ -37,10 +37,15 @@ gen3-client configure --profile=$PROFILE --cred=$CREDS --apiendpoint=https://nci
 while IFS= read -r line; do
   id="$(echo $line | awk '{print $1}')"
   printf "downloading GUID: $id\n"
-  gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH" &
+  gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH"
+  sleep 1
+  # retry for failed resolution
+  if [ "$?" != 0 ] ; then
+    gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH"
+  fi
 done <<< "$(tail -n +2 $1)"
 
-wait
-printf "files in $1 downloaded to path:\n - $FULLPATH\n\t...adding to Galaxy..."
+# wait # save thread faniciness
+printf "files in $1 downloaded to path:\n - $FULLPATH\n\t...adding to Galaxy...\n"
 
 python3 main.py -a "$APIKEY" -e "$ENDPOINT" -p "$PORT" -s "$TIMESTAMP"
