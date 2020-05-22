@@ -69,25 +69,20 @@ files = add_files_in_path_to_lib(lib["id"], folder["id"], args.sourcedir)
 if isinstance(files, dict):
     files = [files]
 print(files)
-
+print("waiting on datasets to become available...", end="")
 while True:
     both = True
+    print(".", end="")
     for f in fc.show_folder(folder["id"], contents=True)["folder_contents"]:
         both = f["state"] == "ok" and both
     if both:
         break
     sleep(2)
+print(".available!")
 
 # add files to history 
 history = hc.create_history("{}".format(now_string))
 print(history)
-
-# add individual history entries, because symlinked ldda to collection directly doesnt work
-
-hdata = []
-for f in files:
-    hdata.append(hc.upload_dataset_from_library(history["id"], f["id"]))
-    #hdata.append(hc.copy_dataset(history["id"], f["id"], source='ldda'))
 
 # create dataset collection
 collection_description = {
