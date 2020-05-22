@@ -79,7 +79,8 @@ print(history)
 
 hdata = []
 for f in files:
-  hdata.append(hc.copy_dataset(history["id"], f["id"], source='ldda'))
+    hdata.append(hc.upload_dataset_from_library(history["id"], f["id"]))
+    #hdata.append(hc.copy_dataset(history["id"], f["id"], source='ldda'))
 
 print(hdata)
 
