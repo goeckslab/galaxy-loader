@@ -70,6 +70,14 @@ if isinstance(files, dict):
     files = [files]
 print(files)
 
+while True:
+    both = True
+    for f in fc.show_folder(folder["id"], contents=True)["folder_contents"]:
+        files_ready = f["state"] == "ok" and both
+    if both:
+        break
+    sleep(2)
+
 # add files to history 
 history = hc.create_history("{}".format(str))
 print(history)
