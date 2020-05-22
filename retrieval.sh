@@ -15,25 +15,32 @@ filecheck "$2"
 MANIFEST=$1
 CREDS=$2
 
-FILEPATH="/tmp/galaxyfiles"
+APIKEY="3217c67d843a7aa0ce3e72497a5ffb00"
+ENDPOINT="locahost"
+PORT="8080"
 
-if ! [ -d $FILEPATH ] ; then
-  printf "base path $FILEPATH not found, creating..."
-  mkdir $FILEPATH
+BASEPATH="/tmp/galaxyfiles"
+
+TIMESTAMP="$(date +%Y-%M-%D--%H-%M-%S)"
+
+FULLPATH="$BASEPATH/$TIMESTAMP"
+
+if ! [ -d $FULLPATH ] ; then
+  printf "base path $FULLPATH not found, creating..."
+  mkdir -p $FULLPATH
 fi
 
-if [ "$(ls -A $FILEPATH/)" ] ; then
-  printf "Clearing the contents of $FILEPATH...\n"
-  rm -rf $FILEPATH/*
-fi
+
 
 gen3-client configure --profile=$PROFILE --cred=$CREDS --apiendpoint=https://nci-crdc.datacommons.io
 
 while IFS= read -r line; do
   id="$(echo $line | awk '{print $1}')"
   printf "downloading GUID: $id\n"
-  gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FILEPATH" &
+  gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH" &
 done <<< "$(tail -n +2 $1)"
 
 wait
-printf "files in $1 downloaded...\n"
+printf "files in $1 downloaded to path:\n - $FULLPATH\n\t...adding to Galaxy..."
+
+python3 main.py -a "$APIKEY" -e "$ENDPOINT" -p "$PORT" -s "$TIMESTAMP"

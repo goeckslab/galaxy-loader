@@ -65,5 +65,5 @@ def add_files_in_path_to_lib(lib_id, folder_id, path):
             tag_using_filenames=True
             )
 
-print(add_files_in_path_to_lib(lib["id"], folder["id"], '.'))
+print(add_files_in_path_to_lib(lib["id"], folder["id"], args.sourcedir))
 # add files to history 
