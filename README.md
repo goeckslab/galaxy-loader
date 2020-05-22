@@ -1,6 +1,12 @@
 # Galaxy Loader
 
-##requirements:
+## Requirements:
 - python3
 - bioblend
-- gdc client
+- gen3-client
+- active galaxy to target
+  - configured with `library_import_dir` set
+  - an admin API key
+- a gdc manifest txt file
+- `credentials.json` from nci-crdc.datacommons.io
+- authorization to download what you're requesting
