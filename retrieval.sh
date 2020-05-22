@@ -21,7 +21,7 @@ PORT="8080"
 
 BASEPATH="/tmp/galaxyfiles"
 
-TIMESTAMP="$(date +%Y-%M-%D--%H-%M-%S)"
+TIMESTAMP="$(date +%Y-%m-%d_%H-%M-%S)"
 
 FULLPATH="$BASEPATH/$TIMESTAMP"
 
