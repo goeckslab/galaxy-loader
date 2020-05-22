@@ -42,10 +42,14 @@ while IFS= read -r line; do
   id="$(echo $line | awk '{print $1}')"
   printf "downloading GUID: $id\n"
   gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH"
-  sleep 1
-  # retry for failed resolution
+  # 2 retries for failed resolution
   if [ "$?" != 0 ] ; then
+    sleep 2
     gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH"
+    if [ "$?" != 0 ] ; then
+      sleep 2
+      gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH"
+    fi
   fi
 done <<< "$(tail -n +2 $1)"
 
