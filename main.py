@@ -76,6 +76,14 @@ print(files)
 history = hc.create_history("{}".format(str))
 print(history)
 
+# add individual history entries, because symlinked ldda to collection directly doesnt work
+
+hdata = []
+for f in files:
+  hdata.append(hc.copy_dataset(history["id"], f["id"], source='ldda'))
+
+print(hdata)
+
 # create dataset collection
 collection_description = {
     'collection_type': 'list',
