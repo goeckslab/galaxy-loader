@@ -4,7 +4,6 @@ from bioblend.galaxy import GalaxyInstance
 from bioblend.galaxy.libraries import LibraryClient
 from bioblend.galaxy.histories import HistoryClient
 from bioblend.galaxy.folders import FoldersClient
-from bioblend.galaxy.histories import HistoryClient
 
 from datetime import datetime
 
