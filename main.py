@@ -53,6 +53,7 @@ now_string = datetime.today().strftime("%Y-%m-%d @ %H:%M:%S")
 # create folder to live in
 folder = fc.create_folder(parent_folder_id=lib["root_folder_id"], name=now_string)
 print(folder)
+sleep(1)
 
 # NOTE: NOT RECURSIVE -- only files in base dir
 def add_files_in_path_to_lib(lib_id, folder_id, path):
