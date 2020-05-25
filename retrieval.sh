@@ -44,22 +44,25 @@ fi
 
 gen3-client configure --profile=$PROFILE --cred=$CREDS --apiendpoint=https://nci-crdc.datacommons.io
 
+RESULT=""
+
 while IFS= read -r line; do
   id="$(echo $line | awk '{print $1}')"
   printf "downloading GUID: $id\n"
-  gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH"
+  RESULT=$(gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH" 2>&1 1>/dev/null |  grep "503 Service Unavailable error has occurred")
   # 3 retries for failed resolution
-  if [ "$?" != 0 ] ; then
+  if [ ! -z "$RESULT" ] ; then
     sleep 2
-    gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH"
-    if [ "$?" != 0 ] ; then
+    printf " retrying ... "
+    RESULT=$(gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH" 2>&1 1>/dev/null |  grep "503 Service Unavailable error has occurred")
+    if [ ! -z "$RESULT" ] ; then
       sleep 2
-      printf "... retrying ... "
-      gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH"
-      if [ "$?" != 0 ] ; then
+      printf "... re-retrying ... "
+      RESULT=$(gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH" 2>&1 1>/dev/null |  grep "503 Service Unavailable error has occurred")
+      if [ ! -z "$RESULT" ] ; then
         sleep 2
-        printf "re-retrying ... \n"
-        gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH"
+        printf "re-re-retrying ... \n"
+        RESULT=$(gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH" 2>&1 1>/dev/null |  grep "503 Service Unavailable error has occurred")
     fi
     fi
   fi
