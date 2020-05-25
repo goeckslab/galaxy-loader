@@ -14,6 +14,12 @@ filecheck "$2"
 
 if [ -z "$3" ] ; then
   printf "$3 is empty, should be API key\n"
+  exit 1
+fi
+
+if [ -z "$4" ] ; then 
+  printf "$4 must be a base path\n"
+  exit 1
 fi
 
 MANIFEST=$1
@@ -23,7 +29,7 @@ APIKEY="$3"
 ENDPOINT="127.0.0.1"
 PORT="8080"
 
-BASEPATH="/tmp/galaxyfiles"
+BASEPATH="$4"
 
 TIMESTAMP="$(date +%Y-%m-%d_%H-%M-%S)"
 
@@ -42,13 +48,19 @@ while IFS= read -r line; do
   id="$(echo $line | awk '{print $1}')"
   printf "downloading GUID: $id\n"
   gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH"
-  # 2 retries for failed resolution
+  # 3 retries for failed resolution
   if [ "$?" != 0 ] ; then
     sleep 2
     gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH"
     if [ "$?" != 0 ] ; then
       sleep 2
+      printf "... retrying ... "
       gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH"
+      if [ "$?" != 0 ] ; then
+        sleep 2
+        printf "re-retrying ... \n"
+        gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH"
+    fi
     fi
   fi
 done <<< "$(tail -n +2 $1)"

@@ -69,16 +69,21 @@ files = add_files_in_path_to_lib(lib["id"], folder["id"], args.sourcedir)
 if isinstance(files, dict):
     files = [files]
 print(files)
+print("Data check on {} files:".format(len(files)))
 print("waiting on datasets to become available...", end="")
-while True:
-    both = True
+ready = 0
+old_ready = -1
+while ready < len(files):
+    if ready != old_ready:
+        print(ready, end="")
+        old_ready = ready
+    ready = 0
     print(".", end="")
     for f in fc.show_folder(folder["id"], contents=True)["folder_contents"]:
-        both = f["state"] == "ok" and both
-    if both:
-        break
-    sleep(2)
-print(".available!")
+        if f["state"] == "ok":
+            ready = ready + 1
+    sleep(5)
+print(". {} datasets available!".format(ready))
 
 # add files to history 
 history = hc.create_history("{}".format(now_string))
