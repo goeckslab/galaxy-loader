@@ -83,6 +83,7 @@ while ready < len(files):
         if f["state"] == "ok":
             ready = ready + 1
     sleep(5)
+    print("...")
 print("All {} datasets ready!".format(ready))
 
 # add files to history 
