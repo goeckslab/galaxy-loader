@@ -70,20 +70,19 @@ if isinstance(files, dict):
     files = [files]
 print(files)
 print("Data check on {} files:".format(len(files)))
-print("waiting on datasets to become available...", end="")
+print("waiting on datasets to become available...")
 ready = 0
 old_ready = -1
 while ready < len(files):
     if ready != old_ready:
-        print(ready, end="")
+        print("ready files: {}".format(ready))
         old_ready = ready
     ready = 0
-    print(".", end="")
     for f in fc.show_folder(folder["id"], contents=True)["folder_contents"]:
         if f["state"] == "ok":
             ready = ready + 1
     sleep(5)
-print(". {} datasets available!".format(ready))
+print("All {} datasets ready!".format(ready))
 
 # add files to history 
 history = hc.create_history("{}".format(now_string))
