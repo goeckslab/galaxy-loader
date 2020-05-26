@@ -1,4 +1,5 @@
 import argparse
+import os
 
 from bioblend.galaxy import GalaxyInstance
 from bioblend.galaxy.libraries import LibraryClient
@@ -57,14 +58,28 @@ sleep(1)
 
 # NOTE: NOT RECURSIVE -- only files in base dir
 def add_files_in_path_to_lib(lib_id, folder_id, path):
+    file_list = os.listdir(path)
+    result_list = []
     # FORMAT: upload_file_from_server(library_id, server_dir, folder_id=None, file_type='auto', dbkey='?', link_data_only=None, roles='', preserve_dirs=False, tag_using_filenames=False, tags=None)
-    return lc.upload_file_from_server(
-            library_id = lib_id,
-            server_dir = path,
-            folder_id = folder_id,
-            link_data_only = "link_to_files",
+    for _f in file_list:
+        _f = path + "/" + _f
+        result_list.append(lc.upload_from_galaxy_filesystem(
+            lib_id, 
+            _f,
+            folder_id=folder_id, 
+            link_data_only="link_to_files", 
             tag_using_filenames=True
             )
+        )
+    return result_list
+
+    # return lc.upload_file_from_server(
+    #         library_id = lib_id,
+    #         server_dir = path,
+    #         folder_id = folder_id,
+    #         link_data_only = "link_to_files",
+    #         tag_using_filenames=True
+    #         )
 
 files = add_files_in_path_to_lib(lib["id"], folder["id"], args.sourcedir)
 if isinstance(files, dict):
