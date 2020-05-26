@@ -71,4 +71,4 @@ done <<< "$(tail -n +2 $1)"
 # wait # save thread faniciness
 printf "files in $1 downloaded to path:\n - $FULLPATH\n\t...adding to Galaxy...\n"
 
-python3 main.py -a "$APIKEY" -e "$ENDPOINT" -p "$PORT" -s "$TIMESTAMP"
+python3 main.py -a "$APIKEY" -e "$ENDPOINT" -p "$PORT" -s "$FULLPATH"
