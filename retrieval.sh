@@ -1,5 +1,23 @@
 #!/usr/bin/env bash
 
+help () {
+  printf "Arguments (separated by a space after script name):\n"
+  printf "1st: Manifest file location\n"
+  printf "2nd: Credentials file location\n"
+  printf "3rd: API key\n"
+  printf "4th: Base path where files will be downloaded\n"
+  printf "5th: URL (without port) of Galaxy instance\n"
+  printf "6th: Port on which Galaxy is listening (default: 80)\n\n"
+}
+
+if [ "$1" == "-h" ] ; then 
+  help
+  exit 0
+elif [ "$1" == "--help" ] ; then
+  help
+  exit 0
+fi
+
 PROFILE=ncicrdc
 
 filecheck () {
@@ -13,21 +31,31 @@ filecheck "$1"
 filecheck "$2"
 
 if [ -z "$3" ] ; then
-  printf "$3 is empty, should be API key\n"
+  printf "argument 3 is empty, should be API key\n"
   exit 1
 fi
 
 if [ -z "$4" ] ; then 
-  printf "$4 must be a base path\n"
+  printf "argument 4 must be a base path\n"
   exit 1
+fi
+
+if [ -z "$5" ] ; then
+  5="127.0.0.1"
+  printf "Argument 5 (endpoint) not set ... using '$5'\n"
+fi
+
+if [ -z "$6" ] ; then
+  6="80"
+  printf "Argument 6 (port) not set ... using '$6'\n"
 fi
 
 MANIFEST=$1
 CREDS=$2
 
 APIKEY="$3"
-ENDPOINT="127.0.0.1"
-PORT="8080"
+ENDPOINT="$5"
+PORT="$6"
 
 BASEPATH="$4"
 
