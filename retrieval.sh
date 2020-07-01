@@ -75,7 +75,7 @@ fi
 gen3-client configure --profile=$PROFILE --cred=$CREDS --apiendpoint=https://nci-crdc.datacommons.io
 
 RESULT=""
-TMPPATH="\tmp\gen3temp"
+TMPPATH="/tmp/gen3temp"
 mkdir -p "$TMPPATH"
 
 while IFS= read -r line; do
@@ -101,9 +101,9 @@ while IFS= read -r line; do
 done <<< "$(tail -n +2 $1)"
 
 # move from temp path to final path
-mv "$TMPPATH/*" "$FULLPATH"
+mv "$TMPPATH/*" "$FULLPATH/"
 
 # wait # save thread faniciness
-printf "files in $1 downloaded to path:\n - $FULLPATH\n\t...adding to Galaxy...\n"
+printf "files in $1 downloaded to:\n - $TMPPATH\n and moved to path:\n - $FULLPATH\n\t...adding to Galaxy...\n"
 
 python3 main.py -a "$APIKEY" -e "$ENDPOINT" -p "$PORT" -s "$FULLPATH"
