@@ -101,7 +101,8 @@ while IFS= read -r line; do
 done <<< "$(tail -n +2 $1)"
 
 # move from temp path to final path
-mv "$TMPPATH/*" "$FULLPATH/"
+mv $TMPPATH/* "$FULLPATH/
+rm -rf 
 
 # wait # save thread faniciness
 printf "files in $1 downloaded to:\n - $TMPPATH\n and moved to path:\n - $FULLPATH\n\t...adding to Galaxy...\n"
