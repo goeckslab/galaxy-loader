@@ -41,21 +41,23 @@ if [ -z "$4" ] ; then
 fi
 
 if [ -z "$5" ] ; then
-  5="127.0.0.1"
-  printf "Argument 5 (endpoint) not set ... using '$5'\n"
+  ENDPOINT="127.0.0.1"
+  printf "Argument 5 (endpoint) not set ... using '$ENDPOINT'\n"
+else
+  ENDPOINT="$5"
 fi
 
 if [ -z "$6" ] ; then
-  6="80"
-  printf "Argument 6 (port) not set ... using '$6'\n"
+  PORT="80"
+  printf "Argument 6 (port) not set ... using '$PORT'\n"
+else
+  PORT="$6"
 fi
 
 MANIFEST=$1
 CREDS=$2
 
 APIKEY="$3"
-ENDPOINT="$5"
-PORT="$6"
 
 BASEPATH="$4"
 
@@ -73,28 +75,33 @@ fi
 gen3-client configure --profile=$PROFILE --cred=$CREDS --apiendpoint=https://nci-crdc.datacommons.io
 
 RESULT=""
+TMPPATH="\tmp\gen3temp"
+mkdir -p "$TMPPATH"
 
 while IFS= read -r line; do
   id="$(echo $line | awk '{print $1}')"
   printf "downloading GUID: $id\n"
-  RESULT=$(gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH" 2>&1 1>/dev/null |  grep "503 Service Unavailable error has occurred")
+  RESULT=$(gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$TMPPATH" 2>&1 1>/dev/null |  grep "503 Service Unavailable error has occurred")
   # 3 retries for failed resolution
   if [ ! -z "$RESULT" ] ; then
     sleep 2
     printf " retrying ... "
-    RESULT=$(gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH" 2>&1 1>/dev/null |  grep "503 Service Unavailable error has occurred")
+    RESULT=$(gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$TMPPATH" 2>&1 1>/dev/null |  grep "503 Service Unavailable error has occurred")
     if [ ! -z "$RESULT" ] ; then
       sleep 2
       printf "... re-retrying ... "
-      RESULT=$(gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH" 2>&1 1>/dev/null |  grep "503 Service Unavailable error has occurred")
+      RESULT=$(gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$TMPPATH" 2>&1 1>/dev/null |  grep "503 Service Unavailable error has occurred")
       if [ ! -z "$RESULT" ] ; then
         sleep 2
         printf "re-re-retrying ... \n"
-        RESULT=$(gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$FULLPATH" 2>&1 1>/dev/null |  grep "503 Service Unavailable error has occurred")
+        RESULT=$(gen3-client download-single --profile=$PROFILE --guid=$id --no-prompt --download-path="$TMPPATH" 2>&1 1>/dev/null |  grep "503 Service Unavailable error has occurred")
     fi
     fi
   fi
 done <<< "$(tail -n +2 $1)"
+
+# move from temp path to final path
+mv "$TMPPATH/*" "$FULLPATH"
 
 # wait # save thread faniciness
 printf "files in $1 downloaded to path:\n - $FULLPATH\n\t...adding to Galaxy...\n"
