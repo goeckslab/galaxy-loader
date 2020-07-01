@@ -41,21 +41,23 @@ if [ -z "$4" ] ; then
 fi
 
 if [ -z "$5" ] ; then
-  5="127.0.0.1"
-  printf "Argument 5 (endpoint) not set ... using '$5'\n"
+  ENDPOINT="127.0.0.1"
+  printf "Argument 5 (endpoint) not set ... using '$ENDPOINT'\n"
+else
+  ENDPOINT="$5"
 fi
 
 if [ -z "$6" ] ; then
-  6="80"
-  printf "Argument 6 (port) not set ... using '$6'\n"
+  PORT="80"
+  printf "Argument 6 (port) not set ... using '$PORT'\n"
+else
+  PORT="$6"
 fi
 
 MANIFEST=$1
 CREDS=$2
 
 APIKEY="$3"
-ENDPOINT="$5"
-PORT="$6"
 
 BASEPATH="$4"
 
